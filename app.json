@@ -17,7 +17,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.ifsaurabh6699.SoloContentForge"
     },
     "web": {
       "output": "static",
@@ -34,11 +35,18 @@
             "imageWidth": 76
           }
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f0441fb2-fd78-46a2-a668-95d505c19940"
+      }
     }
   }
 }
