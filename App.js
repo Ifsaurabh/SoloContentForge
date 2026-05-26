@@ -1,3 +1,6 @@
+/* eslint-disable */
+import { registerRootComponent } from 'expo';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -10,7 +13,7 @@ import SettingsScreen from './screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+function App() {
   return (
     <AppProvider>
       <NavigationContainer>
@@ -53,3 +56,5 @@ export default function App() {
     </AppProvider>
   );
 }
+
+registerRootComponent(App);

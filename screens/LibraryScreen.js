@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+/* eslint-disable */
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useApp } from '../context/AppContext';
 
 const statusColor = { draft: '#f0c040', ready: '#e07840', uploaded: '#40c070', idea: '#4080e0' };
@@ -12,6 +13,7 @@ export default function LibraryScreen() {
   const [search, setSearch] = useState('');
 
   const filters = ['all', 'idea', 'draft', 'ready', 'uploaded'];
+
   const filtered = videos.filter(v => {
     const matchFilter = filter === 'all' || v.status === filter;
     const matchSearch = v.title.toLowerCase().includes(search.toLowerCase());
@@ -23,11 +25,14 @@ export default function LibraryScreen() {
       <View style={{ padding: 20, paddingTop: 60 }}>
         <Text style={{ fontWeight: '800', fontSize: 20, color: C.text, marginBottom: 12 }}>Content Library 📚</Text>
         <TextInput
-          placeholder="🔍 Search videos..." placeholderTextColor={C.text3} value={search} onChangeText={setSearch}
+          placeholder="🔍 Search videos..."
+          placeholderTextColor={C.text3}
+          value={search}
+          onChangeText={setSearch}
           style={{ backgroundColor: C.surface2, borderRadius: 10, padding: 12, color: C.text, borderWidth: 1, borderColor: C.border }}
         />
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingLeft: 16, marginBottom: 8, flexGrow: 0 }} contentContainerStyle={{ gap: 8, paddingRight: 16 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, marginBottom: 8 }} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }}>
         {filters.map(f => (
           <TouchableOpacity key={f} onPress={() => setFilter(f)}
             style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 100, borderWidth: 1.5, borderColor: filter === f ? C.accent : C.border, backgroundColor: filter === f ? C.accent + '15' : C.surface2 }}>

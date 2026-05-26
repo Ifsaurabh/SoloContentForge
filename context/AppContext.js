@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { createContext, useContext, useState } from 'react';
 
 const AppContext = createContext();
@@ -44,10 +45,41 @@ export function AppProvider({ children }) {
   };
 
   const C = colors[theme];
+
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
-  const addVideo = (video) => setVideos(prev => [{ ...video, id: Date.now(), created: 'Just now' }, ...prev]);
-  const addApiKey = (key) => setApiKeys(prev => [...prev, key]);
-  const removeApiKey = (id) => setApiKeys(prev => prev.filter(k => k.id !== id));
+
+  const addVideo = (video) => {
+    setVideos(prev => [{ ...video, id: Date.now(), created: 'Just now' }, ...prev]);
+  };
+
+  const addApiKey = (key) => {
+    setApiKeys(prev => [...prev, key]);
+  };
+
+  const removeApiKey = (id) => {
+    setApiKeys(prev => prev.filter(k => k.id !== id));
+  };
+
+  const value = {
+    theme,
+    toggleTheme,
+    C,
+    language,
+    setLanguage,
+    apiKeys,
+    addApiKey,
+    removeApiKey,
+    videos,
+    addVideo
+  };
 
   return (
-    <AppContext.Provider value={{ theme, toggleTheme, C, language, setLanguage, apiKeys, addApiKey, removeApiKey, videos, a
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+export function useApp() {
+  return useContext(AppContext);
+}

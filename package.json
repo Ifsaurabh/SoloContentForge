@@ -1,6 +1,6 @@
 {
   "name": "solocontentforge",
-  "main": "expo-router/entry",
+  "main": "App.js",
   "version": "1.0.0",
   "dependencies": {
     "@expo/ui": "~56.0.14",
@@ -16,7 +16,6 @@
     "expo-glass-effect": "~56.0.4",
     "expo-image": "~56.0.9",
     "expo-linking": "~56.0.12",
-    "expo-router": "~56.2.7",
     "expo-sharing": "~56.0.14",
     "expo-splash-screen": "~56.0.10",
     "expo-status-bar": "~56.0.4",
