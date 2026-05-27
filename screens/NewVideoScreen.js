@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
 import { useApp } from '../context/AppContext';
 
 const shortSections = [
@@ -49,14 +49,14 @@ const demoTitles = [
 ];
 
 const demoClips = [
-  { id: 0, icon: '💰', label: 'Money stress', duration: '8s', approved: true },
-  { id: 1, icon: '🧠', label: 'Thinking man', duration: '12s', approved: true },
-  { id: 2, icon: '📊', label: 'Finance chart', duration: '6s', approved: true },
-  { id: 3, icon: '💸', label: 'Cash flow', duration: '15s', approved: true },
-  { id: 4, icon: '🏙️', label: 'City life', duration: '20s', approved: true },
-  { id: 5, icon: '📱', label: 'Phone scroll', duration: '5s', approved: true },
-  { id: 6, icon: '🤔', label: 'Decision maker', duration: '10s', approved: true },
-  { id: 7, icon: '💼', label: 'Business walk', duration: '18s', approved: true },
+  { id: 0, icon: '💰', label: 'Money stress', duration: '8s', approved: true, thumbnail: null },
+  { id: 1, icon: '🧠', label: 'Thinking man', duration: '12s', approved: true, thumbnail: null },
+  { id: 2, icon: '📊', label: 'Finance chart', duration: '6s', approved: true, thumbnail: null },
+  { id: 3, icon: '💸', label: 'Cash flow', duration: '15s', approved: true, thumbnail: null },
+  { id: 4, icon: '🏙️', label: 'City life', duration: '20s', approved: true, thumbnail: null },
+  { id: 5, icon: '📱', label: 'Phone scroll', duration: '5s', approved: true, thumbnail: null },
+  { id: 6, icon: '🤔', label: 'Decision maker', duration: '10s', approved: true, thumbnail: null },
+  { id: 7, icon: '💼', label: 'Business walk', duration: '18s', approved: true, thumbnail: null },
 ];
 
 export default function NewVideoScreen() {
@@ -81,15 +81,14 @@ export default function NewVideoScreen() {
 
   const sections = videoType === 'short' ? shortSections : longSections;
   const claudeKey = apiKeys.find(k => k.service.toLowerCase().includes('claude'))?.key;
-  const deepgramKey = apiKeys.find(k => k.service.toLowerCase().includes('deepgram'))?.key;
   const pexelsKey = apiKeys.find(k => k.service.toLowerCase().includes('pexels'))?.key;
 
   const primaryBtn = { backgroundColor: C.accent, borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 8 };
   const secondaryBtn = { backgroundColor: C.surface2, borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 8, borderWidth: 1, borderColor: C.border };
 
-  const StepDots = ({ total = 11 }) => (
+  const StepDots = () => (
     <View style={{ flexDirection: 'row', gap: 3, padding: 16, paddingTop: 56, flexWrap: 'wrap' }}>
-      {Array.from({ length: total }, (_, i) => i + 1).map(i => (
+      {Array.from({ length: 11 }, (_, i) => i + 1).map(i => (
         <View key={i} style={{ height: 5, width: step === i ? 18 : 5, borderRadius: 100, backgroundColor: i < step ? '#40c070' : i === step ? C.accent : C.border }} />
       ))}
     </View>
@@ -111,7 +110,7 @@ export default function NewVideoScreen() {
         const text = data.content[0].text.replace(/```json|```/g, '').trim();
         const parsed = JSON.parse(text);
         setScript(parsed.sections);
-        generateTitles(claudeKey);
+        await generateTitles(claudeKey);
       } catch (e) {
         setScript(demoScript);
         setTitles(demoTitles);
@@ -158,23 +157,28 @@ export default function NewVideoScreen() {
   async function searchPexelsClips() {
     if (!pexelsKey) { setClips(demoClips); return; }
     try {
-      const query = idea.split(' ').slice(0, 3).join(' ');
+      const query = idea.split(' ').slice(0, 3).join('+');
       const res = await fetch(`https://api.pexels.com/videos/search?query=${query}&per_page=8`, {
         headers: { Authorization: pexelsKey }
       });
       const data = await res.json();
-      if (data.videos) {
+      if (data.videos && data.videos.length > 0) {
         const mapped = data.videos.map((v, i) => ({
           id: i,
           icon: '🎬',
           label: v.user.name,
           duration: v.duration + 's',
           approved: true,
+          thumbnail: v.image,
           url: v.video_files[0]?.link
         }));
         setClips(mapped);
+      } else {
+        setClips(demoClips);
       }
-    } catch { setClips(demoClips); }
+    } catch (e) {
+      setClips(demoClips);
+    }
   }
 
   async function generateSubtitles() {
@@ -348,7 +352,7 @@ export default function NewVideoScreen() {
         );
       })}
       <View style={{ padding: 16 }}>
-        <TouchableOpacity style={{ backgroundColor: C.surface2, borderRadius: 12, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: C.border, marginBottom: 8 }} onPress={() => { setScript(demoScript); }}>
+        <TouchableOpacity style={{ backgroundColor: C.surface2, borderRadius: 12, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: C.border, marginBottom: 8 }} onPress={() => setScript(demoScript)}>
           <Text style={{ color: C.text2 }}>🔄 Regenerate Full Script</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ backgroundColor: C.accent, borderRadius: 12, padding: 14, alignItems: 'center' }} onPress={() => setStep(7)}>
@@ -407,7 +411,7 @@ export default function NewVideoScreen() {
           {tags.map((tag, i) => (
             <TouchableOpacity key={i} onPress={() => setTags(prev => prev.filter((_, idx) => idx !== i))} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: C.surface2, borderRadius: 100, borderWidth: 1, borderColor: C.border }}>
               <Text style={{ fontSize: 12, color: C.text2 }}>{tag}</Text>
-              <Text style={{ fontSize: 12, color: C.danger }}>✕</Text>
+              <Text style={{ fontSize: 12, color: '#e04040' }}>✕</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -448,9 +452,13 @@ export default function NewVideoScreen() {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
           {clips.map((clip, i) => (
             <View key={i} style={{ width: '47%', borderWidth: 1, borderColor: clip.approved ? '#40c070' : C.border, borderRadius: 12, overflow: 'hidden', backgroundColor: C.surface }}>
-              <View style={{ height: 70, backgroundColor: C.surface2, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 30 }}>{clip.icon}</Text>
-                <Text style={{ position: 'absolute', bottom: 4, right: 6, fontSize: 10, color: C.text3, backgroundColor: C.bg, paddingHorizontal: 4, borderRadius: 4 }}>{clip.duration}</Text>
+              <View style={{ height: 90, backgroundColor: C.surface2, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                {clip.thumbnail ? (
+                  <Image source={{ uri: clip.thumbnail }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                ) : (
+                  <Text style={{ fontSize: 30 }}>{clip.icon}</Text>
+                )}
+                <Text style={{ position: 'absolute', bottom: 4, right: 6, fontSize: 10, color: '#fff', backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 4, borderRadius: 4 }}>{clip.duration}</Text>
               </View>
               <View style={{ padding: 8 }}>
                 <Text style={{ fontSize: 11, color: C.text2, marginBottom: 6 }}>clip-{String(i + 1).padStart(2, '0')} · {clip.label}</Text>
@@ -495,7 +503,7 @@ export default function NewVideoScreen() {
           <>
             {subtitleLines.map((line, i) => (
               <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 10, borderBottomWidth: 1, borderColor: C.border }}>
-                <Text style={{ fontSize: 11, color: C.accent, fontWeight: '600', minWidth: 55, fontFamily: 'monospace' }}>[{line.t}]</Text>
+                <Text style={{ fontSize: 11, color: C.accent, fontWeight: '600', minWidth: 55 }}>[{line.t}]</Text>
                 <TextInput value={line.text} onChangeText={val => setSubtitleLines(prev => prev.map((l, idx) => idx === i ? { ...l, text: val } : l))} style={{ flex: 1, fontSize: 13, color: C.text, lineHeight: 20 }} />
               </View>
             ))}
@@ -524,20 +532,20 @@ export default function NewVideoScreen() {
         <Text style={{ fontSize: 13, color: C.text2, marginBottom: 16 }}>Sab kuch check karo pehle</Text>
         <View style={{ backgroundColor: C.surface, borderRadius: 14, borderWidth: 1, borderColor: C.border, padding: 16, marginBottom: 20 }}>
           {[
-            { label: 'Script', done: script.length > 0, step: 6 },
-            { label: 'Title', done: !!selectedTitle, sub: selectedTitle?.substring(0, 30) + '...', step: 7 },
-            { label: 'Description', done: !!description, step: 8 },
+            { label: 'Script', done: script.length > 0, sub: script.length + ' sections', step: 6 },
+            { label: 'Title', done: !!selectedTitle, sub: selectedTitle?.substring(0, 35) + '...', step: 7 },
+            { label: 'Description', done: !!description, sub: description ? 'Added' : 'Not added', step: 8 },
             { label: 'Tags', done: tags.length > 0, sub: tags.length + ' tags', step: 8 },
             { label: 'Video Clips', done: clips.filter(c => c.approved).length > 0, sub: clips.filter(c => c.approved).length + ' clips approved', step: 9 },
             { label: 'Subtitles', done: subtitleLines.length > 0, sub: subtitleLines.length + ' lines', step: 10 },
-          ].map((item, i) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: i < 5 ? 1 : 0, borderColor: C.border }}>
+          ].map((item, i, arr) => (
+            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderColor: C.border }}>
               <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: item.done ? '#40c07020' : C.surface2, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
                 <Text style={{ fontSize: 14 }}>{item.done ? '✅' : '⏳'}</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 14, color: C.text }}>{item.label}</Text>
-                {item.sub && <Text style={{ fontSize: 11, color: C.text3, marginTop: 2 }}>{item.sub}</Text>}
+                <Text style={{ fontSize: 11, color: C.text3, marginTop: 2 }}>{item.sub}</Text>
               </View>
               <TouchableOpacity onPress={() => setStep(item.step)} style={{ backgroundColor: C.surface2, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, borderWidth: 1, borderColor: C.border }}>
                 <Text style={{ fontSize: 12, color: C.text2 }}>Edit</Text>
@@ -545,15 +553,16 @@ export default function NewVideoScreen() {
             </View>
           ))}
         </View>
-        <TouchableOpacity style={{ backgroundColor: C.accent, borderRadius: 14, padding: 16, alignItems: 'center', marginBottom: 10 }} onPress={() => {
-          addVideo({ title: selectedTitle || idea, pillar, type: videoType, status: 'ready' });
-          Alert.alert('🎬', 'Video marked as Ready to Upload!');
-          setStep(1);
-          setIdea(''); setVideoType(''); setPillar(''); setEmotions({});
-          setScript([]); setSelectedTitle(''); setDescription('');
-          setTags(['#personalfinance', '#paisa', '#middleclass', '#kahanipaisonki', '#hindishorts', '#moneypsychology']);
-          setClips([...demoClips]); setSubtitleLines([]);
-        }}>
+        <TouchableOpacity style={{ backgroundColor: C.accent, borderRadius: 14, padding: 16, alignItems: 'center', marginBottom: 10 }}
+          onPress={() => {
+            addVideo({ title: selectedTitle || idea, pillar, type: videoType, status: 'ready' });
+            Alert.alert('🎬', 'Video marked as Ready to Upload!');
+            setStep(1);
+            setIdea(''); setVideoType(''); setPillar(''); setEmotions({});
+            setScript([]); setSelectedTitle(''); setDescription('');
+            setTags(['#personalfinance', '#paisa', '#middleclass', '#kahanipaisonki', '#hindishorts', '#moneypsychology']);
+            setClips([...demoClips]); setSubtitleLines([]);
+          }}>
           <Text style={{ fontWeight: '700', fontSize: 16, color: '#111' }}>🚀 Mark as Ready to Upload</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ backgroundColor: C.surface2, borderRadius: 14, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: C.border }} onPress={() => setStep(1)}>
