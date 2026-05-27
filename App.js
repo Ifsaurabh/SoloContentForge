@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { registerRootComponent } from 'expo';
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { Text } from 'react-native';
 import { AppProvider } from './context/AppContext';
@@ -22,34 +22,51 @@ function App() {
           screenOptions={{
             headerShown: false,
             tabBarStyle: {
-              backgroundColor: '#13131a',
-              borderTopColor: '#2a2a3a',
-              height: 60,
+              backgroundColor: '#080810',
+              borderTopColor: '#222233',
+              height: 62,
               paddingBottom: 8,
+              paddingTop: 4,
             },
-            tabBarActiveTintColor: '#f0c040',
-            tabBarInactiveTintColor: '#8888aa',
+            tabBarActiveTintColor: '#F5C518',
+            tabBarInactiveTintColor: '#444466',
+            tabBarLabelStyle: {
+              fontSize: 11,
+              fontWeight: '600',
+            },
           }}
         >
           <Tab.Screen
             name="Home"
             component={DashboardScreen}
-            options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>🏠</Text> }}
+            options={{
+              tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>🏠</Text>,
+              tabBarLabel: 'Home',
+            }}
           />
           <Tab.Screen
             name="New"
             component={NewVideoScreen}
-            options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>➕</Text> }}
+            options={{
+              tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>➕</Text>,
+              tabBarLabel: 'New Video',
+            }}
           />
           <Tab.Screen
             name="Library"
             component={LibraryScreen}
-            options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>📚</Text> }}
+            options={{
+              tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>📚</Text>,
+              tabBarLabel: 'Library',
+            }}
           />
           <Tab.Screen
             name="Settings"
             component={SettingsScreen}
-            options={{ tabBarIcon: () => <Text style={{ fontSize: 20 }}>⚙️</Text> }}
+            options={{
+              tabBarIcon: ({ color }) => <Text style={{ fontSize: 20 }}>⚙️</Text>,
+              tabBarLabel: 'Settings',
+            }}
           />
         </Tab.Navigator>
       </NavigationContainer>
