@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, Modal, ActivityIndicator } from 'react-native';
 import { useApp } from '../context/AppContext';
-import { Video } from 'expo-av';
+import { Linking } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
@@ -826,21 +826,21 @@ Return JSON only:
 
         {/* Video Preview Modal */}
         <Modal visible={!!previewVideo} transparent animationType="fade" onRequestClose={() => setPreviewVideo(null)}>
-          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.9)', alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.9)', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
             <TouchableOpacity onPress={() => setPreviewVideo(null)}
-              style={{ position: 'absolute', top: 50, right: 20, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: 18 }}>✕</Text>
+               style={{ position: 'absolute', top: 50, right: 20, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+               <Text style={{ color: '#fff', fontSize: 18 }}>✕</Text>
             </TouchableOpacity>
-            {previewVideo && (
-              <Video
-                source={{ uri: previewVideo }}
-                style={{ width: 360, height: 240, borderRadius: 12 }}
-                useNativeControls
-                resizeMode="contain"
-                shouldPlay
-              />
-            )}
-            <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, marginTop: 16 }}>Tap ✕ to close</Text>
+            <Text style={{ fontSize: 50, marginBottom: 20 }}>🎬</Text>
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '700', marginBottom: 8, textAlign: 'center' }}>Preview Video</Text>
+            <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, textAlign: 'center', marginBottom: 24 }}>Tap below to open video in browser</Text>
+            <TouchableOpacity onPress={() => { Linking.openURL(previewVideo); setPreviewVideo(null); }}
+              style={{ backgroundColor: '#F5C518', borderRadius: 14, padding: 14, paddingHorizontal: 30 }}>
+              <Text style={{ color: '#111', fontWeight: '700', fontSize: 15 }}>▶️ Open Video</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setPreviewVideo(null)} style={{ marginTop: 16 }}>
+              <Text style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       </ScrollView>
