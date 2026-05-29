@@ -1,0 +1,9 @@
+changes to be made---
+
+when i used new video - it follows steps as it should be 
+then it went to library- but here if i click on that again nothing happens-
+
+what it should be- when creating new video-at any stage-
+if i go to any other screen or back or anyhitng else,
+id should save the project and progress and should be able to retunt to that stage
+and see every step and that also editable, when wanted - can return to the video etc
