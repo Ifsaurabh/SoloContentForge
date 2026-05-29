@@ -19,8 +19,11 @@
       }
     },
     "plugins": [
-      "expo-sharing"
-      
+      "expo-sharing",
+      "expo-splash-screen",
+      "expo-font",
+      "expo-image",
+      "expo-status-bar"
     ]
   }
 }
