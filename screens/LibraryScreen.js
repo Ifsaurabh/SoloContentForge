@@ -11,7 +11,7 @@ import {
   CheckCircle, Upload, Clock, Zap, Circle, TrendingUp,
   AlertTriangle, Star, Flag, Play
 } from 'lucide-react-native';
-import { VideoView, useVideoPlayer } from 'expo-video';
+
 
 const statusColor = { draft: '#F5C518', ready: '#7B6EF6', uploaded: '#00C875', idea: '#4D9FFF' };
 const statusLabel = { draft: 'Draft', ready: 'Ready', uploaded: 'Uploaded', idea: 'Idea' };

@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
-import { VideoView, useVideoPlayer } from 'expo-video';
 import { Image } from 'expo-image';
 import {
   Zap, Circle, TrendingUp, AlertTriangle, Star, Flag,
@@ -92,17 +91,8 @@ const demoTitles = [
 
 // Video player component using expo-video
 function VideoPlayer({ uri, onClose }) {
-  const player = useVideoPlayer(uri, p => { p.loop = false; p.play(); });
-  return (
-    <Modal visible animationType="fade" transparent onRequestClose={onClose}>
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', alignItems: 'center', justifyContent: 'center' }}>
-        <TouchableOpacity onPress={onClose} style={{ position: 'absolute', top: 50, right: 20, zIndex: 10, padding: 10 }}>
-          <X size={24} color="#fff" strokeWidth={2} />
-        </TouchableOpacity>
-        <VideoView player={player} style={{ width: '90%', height: 500, borderRadius: 16 }} contentFit="contain" />
-      </View>
-    </Modal>
-  );
+  useEffect(() => { Linking.openURL(uri); onClose(); }, []);
+  return null;
 }
 
 export default function NewVideoScreen() {

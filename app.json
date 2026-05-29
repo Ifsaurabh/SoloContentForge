@@ -19,8 +19,8 @@
       }
     },
     "plugins": [
-      "expo-sharing",
-      "expo-video"
+      "expo-sharing"
+      
     ]
   }
 }
